@@ -4,8 +4,7 @@
 
 ## Read in libraries
 library(ggplot2)
-library(reshape)
-# library(plyr)
+library(reshape2)
 library(gridExtra)
 library(pander)
 library(tidyverse)
@@ -14,8 +13,8 @@ library(tidyverse)
 pathstart <- "~/Dropbox/Tracey's EcoA Work/2018/Mexico model/outputs/"
 
 ## Read in data input file
-# dataInput = read.csv("inputs/dataInputMexico_1028.csv", header=TRUE,stringsAsFactors=FALSE)
-dataInput = read.csv("inputs/dataInputMexico_test.csv", header=TRUE,stringsAsFactors=FALSE)
+dataInput = read.csv("inputs/dataInputMexico_1028.csv", header=TRUE,stringsAsFactors=FALSE)
+
 
 # ## Read in parameter text descriptions
 # parameterText = read.csv("parameterTextMexico.csv", header=TRUE,stringsAsFactors=FALSE,check.names=FALSE)
@@ -27,8 +26,8 @@ source("scripts/functionsMexico0114.R")
 
 ################################################
 #### Set up model run
-## Enter management scenarios to loop over - select 1 through 5
-scenarios = c(1,2,4,5)
+## Enter management scenarios to loop over - select 1 through 6
+scenarios = c(1,2,3,4)
 ## Enter number of legal harvest thetas to loop over - must be greater than 1
 thetas = 1
 ## Enter whether or not to loop over catch share cost and price scalars - put "yes" or "no"
@@ -37,6 +36,9 @@ catchShareLoop = "yes"
 illegalLoop = "yes"
 ################################################
 
+################################################
+### Implementation vector
+delayVec <- c(2:20)
 
 summaryData = matrix(NA,nrow=nrow(dataInput),ncol=35)
 colnames(summaryData)=c("Species",
@@ -77,8 +79,8 @@ colnames(summaryData)=c("Species",
 
 
 ## Loop over all fisheries
-# for (i in 1:1)
-for (i in 1:nrow(dataInput))
+for (i in 1:2)
+# for (i in 1:nrow(dataInput))
 {
     outputs = projectionModel(dataInput[i,],scenarios,thetas,catchShareLoop,illegalLoop)
     summaryData[i,] = c(dataInput[i,]$Species,
@@ -136,8 +138,10 @@ for (i in 1:nrow(dataInput))
     
     masterOutput$management[masterOutput$management == 1] = "SQ"
     masterOutput$management[masterOutput$management == 2] = "FMSY"
-    masterOutput$management[masterOutput$management == 3] = "econOpt"
-    masterOutput$management[masterOutput$management == 4] = "close"
+    masterOutput$management[masterOutput$management == 3] = "minRec"
+    masterOutput$management[masterOutput$management == 4] = "econOpt"
+    masterOutput$management[masterOutput$management == 5] = "close"
+    masterOutput$management[masterOutput$management == 6] = "openA"
     masterOutput$catchShare[masterOutput$catchShare == 1] = "no_CS"
     masterOutput$catchShare[masterOutput$catchShare == 2] = "CS"
     masterOutput$illegalFishing[masterOutput$illegalFishing == 1] = "illegal_fishing"
@@ -154,10 +158,14 @@ for (i in 1:nrow(dataInput))
       recoveryOutput = rbind(recoveryOutput,recoveryOutputi)
     }
     
-    recoveryOutput$management[recoveryOutput$management == 1] = "SQ"
-    recoveryOutput$management[recoveryOutput$management == 2] = "econOpt"
-    recoveryOutput$catchShare[recoveryOutput$catchShare == 1] = "no_CS"
-    recoveryOutput$catchShare[recoveryOutput$catchShare == 2] = "CS"
+    masterOutput$management[masterOutput$management == 1] = "SQ"
+    masterOutput$management[masterOutput$management == 2] = "FMSY"
+    masterOutput$management[masterOutput$management == 3] = "minRec"
+    masterOutput$management[masterOutput$management == 4] = "econOpt"
+    masterOutput$management[masterOutput$management == 5] = "close"
+    masterOutput$management[masterOutput$management == 6] = "openA"
+    masterOutput$catchShare[masterOutput$catchShare == 1] = "no_CS"
+    masterOutput$catchShare[masterOutput$catchShare == 2] = "CS"
     recoveryOutput$illegalFishing[recoveryOutput$illegalFishing == 1] = "illegal_fishing"
     recoveryOutput$illegalFishing[recoveryOutput$illegalFishing == 2] = "no_illegal_fishing"
     
