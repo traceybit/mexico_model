@@ -98,7 +98,11 @@ parameterPull = function(upper,lower,expected)
 
 recoveryTime = function(bProjectionVec,recoveryCutoff,t)
 {
-  if (max(bProjectionVec) < recoveryCutoff) time = NA else time = min(which(bProjectionVec >= recoveryCutoff))
+  
+  minimumSlot = which(bProjectionVec == min(bProjectionVec))[1]
+  
+  if (max(bProjectionVec) < recoveryCutoff) time = NA else time = which(bProjectionVec[minimumSlot:t] >= recoveryCutoff)[1] + minimumSlot - 1
+  
   return(time)
 }
 
