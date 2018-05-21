@@ -262,7 +262,7 @@ projectionModel = function(params,S,Thetas,CatchShareLoop,LegalLoop)
 {
   ##Set up loops
   N = params$N
-  T = params$T
+  time = params$time
   if (CatchShareLoop == "yes") L = 2 else L = 1
   if (LegalLoop == "yes") M = 2 else M = 1
   
@@ -278,37 +278,37 @@ projectionModel = function(params,S,Thetas,CatchShareLoop,LegalLoop)
   policies = array(NA,dim=c(length(S),N,Thetas,L,M,length(bVEC)))
   
   ## initialize biomass reference point projection array
-  bProjections = array(NA,dim=c(length(S),N,Thetas,L,M,length(delayVec),T))
+  bProjections = array(NA,dim=c(length(S),N,Thetas,L,M,length(delayVec),time))
   
   ## initialize absolute biomass projection array
-  BProjections = array(NA,dim=c(length(S),N,Thetas,L,M,length(delayVec),T))
+  BProjections = array(NA,dim=c(length(S),N,Thetas,L,M,length(delayVec),time))
   
   ## initialize intervention fishing mortality reference point projection array
-  fIntProjections = array(NA,dim=c(length(S),N,Thetas,L,M,length(delayVec),T))
+  fIntProjections = array(NA,dim=c(length(S),N,Thetas,L,M,length(delayVec),time))
   
   ## initialize non-intervention fishing mortality reference point projection array
-  fNonIntProjections = array(NA,dim=c(length(S),N,Thetas,L,M,length(delayVec),T))
+  fNonIntProjections = array(NA,dim=c(length(S),N,Thetas,L,M,length(delayVec),time))
   
   ## initialize total fishing mortality reference point projection array
-  fTotalProjections = array(NA,dim=c(length(S),N,Thetas,L,M,length(delayVec),T))
+  fTotalProjections = array(NA,dim=c(length(S),N,Thetas,L,M,length(delayVec),time))
   
   ## initialize intervention absolute harvest projection array
-  HIntProjections = array(NA,dim=c(length(S),N,Thetas,L,M,length(delayVec),T))
+  HIntProjections = array(NA,dim=c(length(S),N,Thetas,L,M,length(delayVec),time))
   
   ## initialize non-intervention absolute harvest projection array
-  HNonIntProjections = array(NA,dim=c(length(S),N,Thetas,L,M,length(delayVec),T))
+  HNonIntProjections = array(NA,dim=c(length(S),N,Thetas,L,M,length(delayVec),time))
   
   ## initialize total absolute harvest projection array
-  HTotalProjections = array(NA,dim=c(length(S),N,Thetas,L,M,length(delayVec),T))
+  HTotalProjections = array(NA,dim=c(length(S),N,Thetas,L,M,length(delayVec),time))
   
   ## initialize revenue projection array
-  revenueProjections = array(NA,dim=c(length(S),N,Thetas,L,M,length(delayVec),T))
+  revenueProjections = array(NA,dim=c(length(S),N,Thetas,L,M,length(delayVec),time))
   
   ## initialize cost projection array
-  costProjections = array(NA,dim=c(length(S),N,Thetas,L,M,length(delayVec),T))
+  costProjections = array(NA,dim=c(length(S),N,Thetas,L,M,length(delayVec),time))
   
   ## initialize profit projection array
-  profitProjections = array(NA,dim=c(length(S),N,Thetas,L,M,length(delayVec),T))
+  profitProjections = array(NA,dim=c(length(S),N,Thetas,L,M,length(delayVec),time))
   
   ## initialize time to biological recovery matrix
   timeToRecovery = array(NA,dim=c(length(S),N,Thetas,L,M,length(delayVec)))
@@ -398,7 +398,7 @@ projectionModel = function(params,S,Thetas,CatchShareLoop,LegalLoop)
             # policies[i,j,k,l,m,] = policy(S[i],gN,KN,phiN,pN,f0IntN,f0NonIntN,cN,betaN,discN,bVEC)$f1
             
             ## Loop over all time steps
-            for (n in 1:T){
+            for (n in 1:time){
               
               #print(paste("Scenario ",i,"of",length(S),"; Monte Carlo Iteration",j,"of",N,"; Theta", k,"of",Thetas,"; Catch Share Loop",l,"of",L,"; Illegal Elimination Loop",m,"of",M,"; Time Step",n,"of",T,sep=" "))
               
@@ -451,11 +451,11 @@ projectionModel = function(params,S,Thetas,CatchShareLoop,LegalLoop)
               
               profitProjections[i,j,k,l,m,h,n] = econModel(gN,KN,phiN,pN,fIntProjections[i,j,k,l,m,h,n],bProjections[i,j,k,l,m,h,n],cN,betaN)$pi
               
-              if (n < T) bProjections[i,j,k,l,m,h,n+1] = bioModel(bProjections[i,j,k,l,m,h,n],phiN,gN,fIntProjections[i,j,k,l,m,h,n],fNonIntProjections[i,j,k,l,m,h,n])
+              if (n < time) bProjections[i,j,k,l,m,h,n+1] = bioModel(bProjections[i,j,k,l,m,h,n],phiN,gN,fIntProjections[i,j,k,l,m,h,n],fNonIntProjections[i,j,k,l,m,h,n])
               
             } ## End loop over time steps
             
-            timeToRecovery[i,j,k,l,m,h] = recoveryTime(bProjections[i,j,k,l,m,h,],cutoff,T)
+            timeToRecovery[i,j,k,l,m,h] = recoveryTime(bProjections[i,j,k,l,m,h,],cutoff,time)
             
             npv[i,j,k,l,m,h] = NPV(discN,profitProjections[i,j,k,l,m,h,])
             
