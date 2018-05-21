@@ -29,7 +29,7 @@ source("scripts/functionsMexico0114.R")
 ## Enter management scenarios to loop over - select 1 through 6
 scenarios = c(1,2,3,4)
 ## Enter number of legal harvest thetas to loop over - must be greater than 1
-thetas = 1
+# thetas = 1
 ## Enter whether or not to loop over catch share cost and price scalars - put "yes" or "no"
 catchShareLoop = "yes"
 ## Enter whether or not to loop over eliminating illegal fishing - put "yes" or "no"
