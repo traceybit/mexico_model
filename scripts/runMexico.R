@@ -28,8 +28,8 @@ source("scripts/functionsMexico0114.R")
 #### Set up model run
 ## Enter management scenarios to loop over - select 1 through 6
 scenarios = c(1,2,3,4)
-## Enter number of legal harvest thetas to loop over - must be greater than 1
-# thetas = 1
+# Enter number of legal harvest thetas to loop over - must be greater than 1
+thetas = 1
 ## Enter whether or not to loop over catch share cost and price scalars - put "yes" or "no"
 catchShareLoop = "yes"
 ## Enter whether or not to loop over eliminating illegal fishing - put "yes" or "no"
@@ -158,14 +158,14 @@ for (i in 1:2)
       recoveryOutput = rbind(recoveryOutput,recoveryOutputi)
     }
     
-    masterOutput$management[masterOutput$management == 1] = "SQ"
-    masterOutput$management[masterOutput$management == 2] = "FMSY"
-    masterOutput$management[masterOutput$management == 3] = "minRec"
-    masterOutput$management[masterOutput$management == 4] = "econOpt"
-    masterOutput$management[masterOutput$management == 5] = "close"
-    masterOutput$management[masterOutput$management == 6] = "openA"
-    masterOutput$catchShare[masterOutput$catchShare == 1] = "no_CS"
-    masterOutput$catchShare[masterOutput$catchShare == 2] = "CS"
+    recoveryOutput$management[recoveryOutput$management == 1] = "SQ"
+    recoveryOutput$management[recoveryOutput$management == 2] = "FMSY"
+    recoveryOutput$management[recoveryOutput$management == 3] = "minRec"
+    recoveryOutput$management[recoveryOutput$management == 4] = "econOpt"
+    recoveryOutput$management[recoveryOutput$management == 5] = "close"
+    recoveryOutput$management[recoveryOutput$management == 6] = "openA"
+    recoveryOutput$catchShare[recoveryOutput$catchShare == 1] = "no_CS"
+    recoveryOutput$catchShare[recoveryOutput$catchShare == 2] = "CS"
     recoveryOutput$illegalFishing[recoveryOutput$illegalFishing == 1] = "illegal_fishing"
     recoveryOutput$illegalFishing[recoveryOutput$illegalFishing == 2] = "no_illegal_fishing"
     

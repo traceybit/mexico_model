@@ -101,9 +101,9 @@ recoveryTime = function(bProjectionVec,recoveryCutoff,t)
   
   minimumSlot = which(bProjectionVec == min(bProjectionVec))[1]
   
-  if (max(bProjectionVec) < recoveryCutoff) time = NA else time = which(bProjectionVec[minimumSlot:t] >= recoveryCutoff)[1] + minimumSlot - 1
+  if (max(bProjectionVec) < recoveryCutoff) rec_time = NA else rec_time = which(bProjectionVec[minimumSlot:t] >= recoveryCutoff)[1] + minimumSlot - 1
   
-  return(time)
+  return(rec_time)
 }
 
 ################################################
@@ -381,10 +381,13 @@ projectionModel = function(params,S,Thetas,CatchShareLoop,LegalLoop)
             
             ## Set policies for current Monte-Carlo iteration parameters - assume perfect information
             f0IntN = f0_totalN * thetaN_legal * thetaN_mexico
+            print(f0IntN)
             
             f0NonIntN = f0_totalN * (1 - thetaN_legal * thetaN_mexico)
+            print(f0NonIntN)
             
             policies[i,j,k,l,m,] = policy(S[i],gN,KN,phiN,pN,f0IntN,f0NonIntN,cN,betaN,discN,bVEC)$f1 
+            # print(policies[i,j,k,l,m,])
             
             ## Set non-intervention f0 depending on illegal harvest elimination loop
             if (m == 1) f0NonIntN = f0_totalN * (1 - thetaN_legal * thetaN_mexico) 
@@ -414,9 +417,13 @@ projectionModel = function(params,S,Thetas,CatchShareLoop,LegalLoop)
                         pN = params$p_expected * gamma_pN
                         cN = params$c_expected * gamma_cN
                     }
-                    if (m == 1) fNonIntProjections[i,j,k,l,m,h,n] = f0_totalN * (1 - thetaN_legal * thetaN_mexico) 
-                    if (m == 2 & n < delayVec[h]) fNonIntProjections[i,j,k,l,m,h,n] = f0_totalN * (1 - thetaN_legal * thetaN_mexico)
+                    if (m == 1) fNonIntProjections[i,j,k,l,m,h,n] = f0NonIntN
+                    if (m == 2 & n < delayVec[h]) fNonIntProjections[i,j,k,l,m,h,n] = f0NonIntN
                     if (m == 2 & n >= delayVec[h]) fNonIntProjections[i,j,k,l,m,h,n] = f0_totalN * (1 - thetaN_mexico)
+                  
+                    # if (m == 1) fNonIntProjections[i,j,k,l,m,h,n] = f0_totalN * (1 - thetaN_legal * thetaN_mexico) 
+                    # if (m == 2 & n < delayVec[h]) fNonIntProjections[i,j,k,l,m,h,n] = f0_totalN * (1 - thetaN_legal * thetaN_mexico)
+                    # if (m == 2 & n >= delayVec[h]) fNonIntProjections[i,j,k,l,m,h,n] = f0_totalN * (1 - thetaN_mexico)
                     ## Open access policy scenario
                     if (S[i] == 6){
                         if (n >= delayVec[h]) { # Only implement improved policy if implementation year is reached
