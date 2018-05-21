@@ -381,13 +381,12 @@ projectionModel = function(params,S,Thetas,CatchShareLoop,LegalLoop)
             
             ## Set policies for current Monte-Carlo iteration parameters - assume perfect information
             f0IntN = f0_totalN * thetaN_legal * thetaN_mexico
-            print(f0IntN)
             
             f0NonIntN = f0_totalN * (1 - thetaN_legal * thetaN_mexico)
-            print(f0NonIntN)
             
+            ## This creates the policy vectors (stream of Fs) for each scenario. Position this AFTER setting pric ean cost depending on CS loop to calculate policies
+            ## that incorporate the fact that illegal harvest has been eliminated (e.g., calc opt policy with no illegal fishing pressure)
             policies[i,j,k,l,m,] = policy(S[i],gN,KN,phiN,pN,f0IntN,f0NonIntN,cN,betaN,discN,bVEC)$f1 
-            # print(policies[i,j,k,l,m,])
             
             ## Set non-intervention f0 depending on illegal harvest elimination loop
             if (m == 1) f0NonIntN = f0_totalN * (1 - thetaN_legal * thetaN_mexico) 
@@ -399,6 +398,7 @@ projectionModel = function(params,S,Thetas,CatchShareLoop,LegalLoop)
                 cN = cN * gamma_cN
             }
             
+            ## See note above policies[]
             # policies[i,j,k,l,m,] = policy(S[i],gN,KN,phiN,pN,f0IntN,f0NonIntN,cN,betaN,discN,bVEC)$f1
             
             ## Loop over all time steps
